@@ -34,6 +34,6 @@ public class DP {
 
     HashSet<Character.UnicodeScript> set = new HashSet<Character.UnicodeScript>();
     for (Character.UnicodeScript s : Character.UnicodeScript.values()) set.add(s);
-    System.out.println(set.size());
+    System.out.println(set.size() + "\t");
   }
 }
