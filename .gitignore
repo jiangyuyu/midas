@@ -19,3 +19,4 @@
 build/
 src/main/configuration/test/
 src/main/configuration/prod/
+.idea/
