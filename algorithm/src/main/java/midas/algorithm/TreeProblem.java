@@ -1,7 +1,12 @@
-package com.midas.algorithm;
+package midas.algorithm;
 
 import java.util.Arrays;
 import java.util.HashSet;
+
+interface Node {
+  public Node getLeft(); // These may return null if no left/right child exists
+  public Node getRight();
+}
 
 public class TreeProblem {
   public boolean containDuplicate(int[] array) {
@@ -22,5 +27,11 @@ public class TreeProblem {
     return false;
   }
 
-
+  public int maxDepth(Node root) {
+    // implementation here
+    if (root == null) return 0;
+    return 1 + Math.max(maxDepth(root.getLeft()), maxDepth(root.getRight()));
+  }
 }
+
+
