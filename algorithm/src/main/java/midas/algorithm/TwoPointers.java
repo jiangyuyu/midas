@@ -179,6 +179,24 @@ public class TwoPointers {
     return total;
   }
 
+  public boolean isStrobogrammatic(String num) {
+    if (num == null || num.length() == 0) return false;
+    int left = 0, right = num.length() - 1;
+    while (left <= right) {
+      char leftc = num.charAt(left);
+      char rightc = num.charAt(right);
+      if ((leftc == rightc && (leftc == '0' || leftc == '1' || leftc == '8'))||
+          (leftc == '6' && rightc == '9') ||
+          (leftc == '9' && rightc == '6')) {
+        left++;
+        right--;
+      } else {
+        return false;
+      }
+    }
+    return true;
+  }
+
 
   public static void main(String[] args) {
     TwoPointers test = new TwoPointers();

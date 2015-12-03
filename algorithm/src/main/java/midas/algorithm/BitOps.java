@@ -21,24 +21,8 @@ public class BitOps {
   }
 
   public String dec2bin (int i) {
-    int x = i;
     StringBuilder sb = new StringBuilder();
-    if (i < 0) {
-      if (i == Integer.MIN_VALUE) {
-        sb.append("1");
-        for (int j = 0; j < 31; j++) {
-          sb.append("0");
-        }
-        return sb.toString();
-      } else {
-        x = -i;
-      }
-    }
-
-    if (i < 0) {
-      x = x-1;
-    }
-
+    int x = i;
     while (x != 0) {
       if ((x & 1) == 1) {
         sb.insert(0, "1");
@@ -47,17 +31,6 @@ public class BitOps {
       }
       x = x >> 1;
     }
-
-    if (i < 0) {
-      for (int j = 0; j < sb.length(); j++) {
-        if (sb.charAt(j) == '1') {
-          sb.setCharAt(j, '0');
-        } else {
-          sb.setCharAt(j, '1');
-        }
-      }
-    }
-
     return sb.toString();
   }
 

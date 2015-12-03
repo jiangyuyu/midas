@@ -1,6 +1,7 @@
 package midas.algorithm;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -109,9 +110,39 @@ public class Hash {
     return minDistance;
   }
 
+  public List<List<String>> groupStrings(String[] strings) {
+    if (strings == null || strings.length == 0) {
+      return new ArrayList<List<String>>();
+    }
+    Arrays.sort(strings);
+    HashMap<String, List<String>> map = new HashMap<String, List<String>>();
+    for (String s : strings) {
+      char[] arr = s.toCharArray();
+      int diff = arr[0] - 'a';
+      for (int i = 0; i < arr.length; i++) {
+        if (arr[i] - 'a' >= diff) {
+          arr[i] = (char)(arr[i] - diff);
+        } else {
+          arr[i] = (char)(arr[i] + 26 - diff);
+        }
+      }
+      String key = new String(arr);
+      if (!map.containsKey(key)) {
+        map.put(key, new ArrayList<String>());
+      }
+      map.get(key).add(s);
+    }
+    List<List<String>>  ret = new ArrayList<List<String>>();
+    for (List<String> v : map.values()) {
+      ret.add(v);
+    }
+    return ret;
+  }
+
   public static void main(String[] args) {
     Hash test = new Hash();
     String[] words = {"a", "b"};
-    System.out.println(test.shortestDistance(words, "a", "b"));
+    String[] arr = {"abc", "bcd", "acef", "xyz", "az", "ba", "a", "z"};
+    System.out.println(test.groupStrings(arr));
   }
 }

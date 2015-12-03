@@ -117,16 +117,112 @@ public class Backtracking {
     return sum;
   }
 
-  /**
-   * This is the interface that represents nested lists.
-   * You should not implement it, or speculate about its implementation.
-   */
+  public List<String> findStrobogrammatic(int n) {
+    if (n <= 0) {
+      return null;
+    }
+    List<String> ret = new ArrayList<String>();
+    char[] temp = new char[n];
+    findStrobogrammatic(n, 0, temp, ret);
+    return ret;
+  }
+  public void findStrobogrammatic(int n, int pos, char[] temp, List<String> ret) {
+    if (pos == (n-1)/2) {
+      if (n%2 == 0) {
+        if (pos != 0) {
+          ret.add(new String(fill(temp, pos, pos + 1, '0', '0')));
+        }
+        ret.add(new String(fill(temp, pos, pos + 1, '6', '9')));
+        ret.add(new String(fill(temp, pos, pos + 1, '9', '6')));
+        ret.add(new String(fill(temp, pos, pos + 1, '1', '1')));
+        ret.add(new String(fill(temp, pos, pos + 1, '8', '8')));
+      } else {
+        ret.add(new String(fill(temp, pos, pos, '0', '0')));
+        ret.add(new String(fill(temp, pos, pos, '1', '1')));
+        ret.add(new String(fill(temp, pos, pos, '8', '8')));
+      }
+      return;
+    }
+    if (pos != 0) {
+      findStrobogrammatic(n, pos+1, fill(temp, pos, n-pos-1, '0', '0'), ret);
+    }
+    findStrobogrammatic(n, pos+1, fill(temp, pos, n-pos-1, '6', '9'), ret);
+    findStrobogrammatic(n, pos+1, fill(temp, pos, n-pos-1, '9', '6'), ret);
+    findStrobogrammatic(n, pos+1, fill(temp, pos, n-pos-1, '1', '1'), ret);
+    findStrobogrammatic(n, pos+1, fill(temp, pos, n-pos-1, '8', '8'), ret);
+  }
 
+  private char[] fill(char[] arr, int left, int right, char leftc, char rightc) {
+    arr[left] = leftc;
+    arr[right] = rightc;
+    return arr;
+  }
 
+  public int strobogrammaticInRange(String low, String high) {
+    if (low.length()>high.length() || (low.length() == high.length() && low.compareTo(high) > 0)) {
+      return 0;
+    }
+    int lowlength = low.length(), highlength = high.length();
+    int ret = 0;
+    for (int l = lowlength; l <= highlength; l++) {
+      char[] temp = new char[l];
+      ret += findStrobogrammatic(l, temp, 0, low, high);
+    }
+    return ret;
+  }
+
+  public int findStrobogrammatic(int n, char[] temp, int pos, String lowbound, String highbound) {
+    if (pos == (n-1)/2) {
+      int total = 0;
+      if (n%2 == 0) {
+        if (pos > 0 && fillCheck(temp, pos, pos+1, '0', '0', lowbound, highbound)) {
+          total++;
+        }
+        if (fillCheck(temp, pos, pos+1, '6', '9', lowbound, highbound)) {
+          total++;
+        }
+        if (fillCheck(temp, pos, pos+1, '9', '6', lowbound, highbound)) {
+          total++;
+        }
+        if (fillCheck(temp, pos, pos+1, '1', '1', lowbound, highbound)) {
+          total++;
+        }
+        if (fillCheck(temp, pos, pos+1, '8', '8', lowbound, highbound)) {
+          total++;
+        }
+      } else {
+        if (fillCheck(temp, pos, pos, '0', '0', lowbound, highbound)) {
+          total++;
+        }
+        if (fillCheck(temp, pos, pos, '1', '1', lowbound, highbound)) {
+          total++;
+        }
+        if (fillCheck(temp, pos, pos, '8', '8', lowbound, highbound)) {
+          total++;
+        }
+      }
+      return total;
+    }
+    int total = 0;
+    if (pos > 0) total += findStrobogrammatic(n, fill(temp, pos, n-pos-1, '0', '0'), pos+1, lowbound, highbound);
+    total += findStrobogrammatic(n, fill(temp, pos, n-pos-1, '1', '1'), pos+1, lowbound, highbound);
+    total += findStrobogrammatic(n, fill(temp, pos, n-pos-1, '8', '8'), pos+1, lowbound, highbound);
+    total += findStrobogrammatic(n, fill(temp, pos, n-pos-1, '6', '9'), pos+1, lowbound, highbound);
+    total += findStrobogrammatic(n, fill(temp, pos, n-pos-1, '9', '6'), pos+1, lowbound, highbound);
+    return total;
+  }
+
+  private boolean fillCheck(char[] arr, int left, int right, char leftc, char rightc, String low, String high) {
+    arr[left] = leftc;
+    arr[right] = rightc;
+    String str = new String(arr);
+    return (str.length() > low.length() || (str.length() == low.length() && str.compareTo(low) >= 0)) &&
+        (str.length() < high.length() || (str.length() == high.length() && str.compareTo(high) <= 0));
+  }
   public static void main(String[] args) {
     Backtracking test = new Backtracking();
 //    System.out.println(test.letterCombinationsIter("23"));
-    System.out.println(test.generateParenthesis(3));
+    System.out.println(test.strobogrammaticInRange("0", "100000000000000"));
   }
 }
 
