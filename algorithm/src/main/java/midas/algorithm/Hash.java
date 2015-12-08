@@ -3,6 +3,7 @@ package midas.algorithm;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -138,6 +139,26 @@ public class Hash {
     }
     return ret;
   }
+
+  public boolean containDuplicate(int[] array) {
+    if (array == null || array.length == 1) return false;
+    HashSet<Integer> elems = new HashSet<>();
+    for (int a : array) {
+      if (elems.contains(a)) return true;
+      elems.add(a);
+    }
+    return false;
+  }
+
+  public boolean containDuplicate2(int[] array) {
+    if (array == null || array.length == 1) return false;
+    Arrays.sort(array);
+    for (int i = 1; i < array.length; i++) {
+      if (array[i] == array[i-1]) return true;
+    }
+    return false;
+  }
+
 
   public static void main(String[] args) {
     Hash test = new Hash();

@@ -2,8 +2,11 @@ package midas.algorithm;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -219,10 +222,50 @@ public class Backtracking {
     return (str.length() > low.length() || (str.length() == low.length() && str.compareTo(low) >= 0)) &&
         (str.length() < high.length() || (str.length() == high.length() && str.compareTo(high) <= 0));
   }
+
+  public List<List<Integer>> getFactors(int n) {
+    Set<List<Integer>> result = new HashSet<>();
+
+    int dist = (int) Math.sqrt(n);
+
+    for (int i = 2; i <= dist; i++) {
+      if (n % i == 0) {
+        List<List<Integer>> tmp = helper(n / i);
+        for (List<Integer> l : tmp) {
+          l.add(i);
+          Collections.sort(l);
+          result.add(l);
+        }
+      }
+    }
+    return new ArrayList<>(result);
+  }
+
+  public List<List<Integer>> helper(int n) {
+    List<List<Integer>> result = new ArrayList<>();
+
+    List<Integer> t = new ArrayList<>();
+    t.add(n);
+    result.add(t);
+
+    int dist = (int) Math.sqrt(n);
+
+    for (int i = 2; i <= dist; i++) {
+      if (n % i == 0) {
+        List<List<Integer>> tmp = helper(n / i);
+        for (List<Integer> l : tmp) {
+          l.add(i);
+          result.add(l);
+        }
+      }
+    }
+    return result;
+  }
+
   public static void main(String[] args) {
     Backtracking test = new Backtracking();
 //    System.out.println(test.letterCombinationsIter("23"));
-    System.out.println(test.strobogrammaticInRange("0", "100000000000000"));
+    System.out.println(test.getFactors(16));
   }
 }
 
