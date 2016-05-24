@@ -1,6 +1,7 @@
 package midas.algorithm;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +45,49 @@ public class Sort {
     return ret;
   }
 
-  public static void main(String[] args) {
+  public int[] intersectSort(int[] nums1, int[] nums2) {
+    if (nums1 == null || nums2 == null || nums1.length == 0 || nums2.length == 0) {
+      return new int[0];
+    }
+    Arrays.sort(nums1);
+    Arrays.sort(nums2);
+    int i = 0, j = 0, k = 0;
+    int[] ret = new int[Math.min(nums1.length, nums2.length)];
+    while (i < nums1.length && j < nums2.length) {
+      if (nums1[i] < nums2[j]) {
+        i++;
+      } else if (nums1[i] > nums2[j]) {
+        j++;
+      } else {
+        ret[k++] = nums1[i];
+        i++;
+        while (i < nums1.length && nums1[i] == nums1[i-1]) i++;
+        j++;
+        while (j < nums2.length && nums2[j] == nums2[j-1]) j++;
+      }
+    }
+    return Arrays.copyOfRange(ret, 0, k);
+  }
+
+  public int[] intersectSortII(int[] nums1, int[] nums2) {
+    if (nums1 == null || nums2 == null || nums1.length == 0 || nums2.length == 0) {
+      return new int[0];
+    }
+    Arrays.sort(nums1);
+    Arrays.sort(nums2);
+    int i = 0, j = 0, k = 0;
+    int[] ret = new int[Math.min(nums1.length, nums2.length)];
+    while (i < nums1.length && j < nums2.length) {
+      if (nums1[i] < nums2[j]) {
+        i++;
+      } else if (nums1[i] > nums2[j]) {
+        j++;
+      } else {
+        ret[k++] = nums1[i];
+        i++;
+        j++;
+      }
+    }
+    return Arrays.copyOfRange(ret, 0, k);
   }
 }
