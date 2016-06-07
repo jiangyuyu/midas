@@ -41,6 +41,32 @@ class NestedIterator implements Iterator<NestedInteger> {
   }
 }
 
+class NestedIteratorRecusion implements Iterator<NestedInteger> {
+  List<NestedInteger> flattenList;
+  Iterator<NestedInteger> iter;
+  public NestedIteratorRecusion(List<NestedInteger> list) {
+    flattenList = new ArrayList<NestedInteger>();
+    initFlattenList(list);
+    iter = flattenList.iterator();
+  }
+
+  public void initFlattenList(List<NestedInteger> list) {
+    for (NestedInteger i : list) {
+      if (i.isInteger()) {
+        flattenList.add(i);
+      } else {
+        initFlattenList(i.getList());
+      }
+    }
+  }
+  public NestedInteger next() {
+    return iter.next();
+  }
+  public boolean hasNext() {
+    return iter.hasNext();
+  }
+}
+
 class MyInteger implements NestedInteger {
   Integer value = null;
   List<NestedInteger> list = null;
@@ -64,7 +90,44 @@ class MyInteger implements NestedInteger {
   }
 }
 
+class MovingAverage {
+  int[] buffer = null;
+  int pnt = 0;
+  int capacity = 0;
+  int size = 0;
+  /** Initialize your data structure here. */
+  public MovingAverage(int size) {
+    buffer = new int[size];
+    capacity = size;
+  }
+
+  public double next(int val) {
+    size = size == capacity ? capacity : size + 1;
+    buffer[pnt%capacity] = val;
+    pnt++;
+    int sum = 0;
+    for (int i : buffer) sum += i;
+    return sum/(double)(size);
+  }
+}
+
 public class DataStructure {
+  public int depthSum(List<NestedInteger> nestedList) {
+    if (nestedList == null || nestedList.size() == 0) return 0;
+    return depthSumHelper(nestedList, 1);
+  }
+  public int depthSumHelper(List<NestedInteger> nestedList, int level) {
+    int sum = 0;
+    for (int i = 0; i < nestedList.size(); i++) {
+      NestedInteger cur = nestedList.get(i);
+      if (cur.isInteger()) {
+        sum += level * cur.getInteger();
+      } else {
+        sum += depthSumHelper(cur.getList(), level + 1);
+      }
+    }
+    return sum;
+  }
   public static void main(String[] args) {
     List<NestedInteger> testlist = new ArrayList<NestedInteger>();
     NestedInteger first = new MyInteger(1);
@@ -77,7 +140,7 @@ public class DataStructure {
     NestedInteger secondInteger = new MyInteger(2);
     testlist.add(secondInteger);
 
-    NestedIterator iter = new NestedIterator(testlist);
+    NestedIteratorRecusion iter = new NestedIteratorRecusion(testlist);
     while(iter.hasNext()) {
       System.out.println(iter.next().getInteger());
     }

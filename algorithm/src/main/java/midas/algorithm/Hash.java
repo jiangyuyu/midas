@@ -3,7 +3,12 @@ package midas.algorithm;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+
 
 public class Hash {
   public int[] twoSum(int[] nums, int target) {
@@ -74,5 +79,55 @@ public class Hash {
       ret[i] = intersect.get(i).intValue();
     }
     return ret;
+  }
+
+  public List<List<Integer>> palindromePairs(String[] words) {
+    List<List<Integer>> pairs = new ArrayList<List<Integer>>();
+    if (words == null || words.length <= 1) {
+      return pairs;
+    }
+    // index the words
+    HashMap<String, Integer> index = new HashMap<String, Integer>();
+    Set<Integer> length = new TreeSet<Integer>();
+    for (int i = 0; i < words.length; i++) {
+      index.put(words[i], i);
+      length.add(words[i].length());
+    }
+    for (int i = 0; i < words.length; i++) {
+      String revWord = new StringBuilder(words[i]).reverse().toString();
+      int len = revWord.length();
+      if (index.containsKey(revWord) && index.get(revWord) != i) {
+        addToPairs(pairs, i, index.get(revWord));
+      }
+
+      for (Iterator<Integer> it = length.iterator(); it.hasNext(); ) {
+        int curlen = it.next();
+        if (curlen >= len) break;
+        if (isPalindrome(revWord.substring(0, len - curlen)) && index.containsKey(revWord.substring(len - curlen))) {
+          addToPairs(pairs, i, index.get(revWord.substring(len - curlen)));
+        }
+        if (isPalindrome(revWord.substring(curlen)) && index.containsKey(revWord.substring(0, curlen))) {
+          addToPairs(pairs, index.get(revWord.substring(0, curlen)), i);
+        }
+      }
+    }
+    return pairs;
+  }
+
+  private boolean isPalindrome(String s) {
+    if (s.length() <= 1) return true;
+    int l = 0, r = s.length()-1;
+    while (l < r) {
+      if (s.charAt(l++) != s.charAt(r--)) return false;
+    }
+    return true;
+  }
+
+  private void addToPairs(List<List<Integer>> pairs, int i, int j) {
+    if (i == j) return;
+    List<Integer> pair = new ArrayList<Integer>();
+    pair.add(i);
+    pair.add(j);
+    pairs.add(pair);
   }
 }

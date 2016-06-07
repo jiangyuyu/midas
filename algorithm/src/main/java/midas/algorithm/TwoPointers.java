@@ -70,8 +70,37 @@ public class TwoPointers {
     return ("aeiouAEIOU".indexOf(c) != -1);
   }
 
+  public int lengthOfLongestSubstringKDistinct(String s, int k) {
+    if (s == null || k == 0) return 0;
+    if (s.length() < k) return s.length();
+    int N = s.length();
+    int maxlen = 0;
+    int[] count = new int[256];
+    int left = 0, right = 0, distinct = 0;
+    while (right < N) {
+      char cur = s.charAt(right);
+      if (count[cur] == 0) {
+        distinct++;
+      }
+      count[cur]++;
+      if (distinct > k) {
+        while (left < right && distinct > k) {
+          char c = s.charAt(left);
+          count[c]--;
+          if (count[c] == 0) distinct--;
+          left++;
+        }
+      }
+      maxlen = Math.max(maxlen, right - left + 1);
+      right++;
+    }
+    return maxlen;
+  }
+
+
+
   public static void main(String[] args) {
     TwoPointers test = new TwoPointers();
-    test.lengthOfLongestSubstringWORepeatChar("aa");
+    System.out.println(test.lengthOfLongestSubstringKDistinct("eceba", 2));
   }
 }

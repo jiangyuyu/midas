@@ -90,4 +90,41 @@ public class Sort {
     }
     return Arrays.copyOfRange(ret, 0, k);
   }
+
+  public boolean increasingTriplet(int[] nums) {
+    if (nums == null || nums.length < 3) return false;
+    int m1 = Integer.MAX_VALUE, m2 = Integer.MAX_VALUE;
+    for (int i = 0; i < nums.length; i++) {
+      if (nums[i] <= m1) m1 = nums[i];
+      else if (nums[i] <= m2) {
+        m2 = nums[i];
+      }
+      else return true;
+    }
+    return false;
+  }
+
+  public boolean increasingFourElems(int[] nums) {
+    if (nums == null || nums.length < 4) return false;
+    int N = nums.length;
+    int m1 = Integer.MAX_VALUE, m2 = Integer.MAX_VALUE, m3 = Integer.MAX_VALUE;
+    for (int i = 0; i < N; i++) {
+      if (nums[i] <= m1) {
+        m1 = nums[i];
+      } else if (nums[i] <= m2) {
+        m2 = nums[i];
+      } else if (nums[i] <= m3) {
+        m3 = nums[i];
+      } else {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public static void main(String[] args) {
+    Sort test = new Sort();
+    int[] a = {4, 1, 5, 7, 2, 7};
+    System.out.println(test.increasingFourElems(a));
+  }
 }
