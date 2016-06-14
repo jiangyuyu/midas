@@ -130,4 +130,9 @@ public class Hash {
     pair.add(j);
     pairs.add(pair);
   }
+
+  public static void main(String[] args) {
+    String[][] tickets = {{"MUC","LHR"},{"JFK","MUC"},{"SFO","SJC"},{"LHR","SFO"}};
+    Hash test = new Hash();
+  }
 }
