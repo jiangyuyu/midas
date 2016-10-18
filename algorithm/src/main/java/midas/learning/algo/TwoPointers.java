@@ -2,6 +2,7 @@ package midas.learning.algo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -92,6 +93,57 @@ public class TwoPointers {
     return target + mindiff;
   }
 
+  public int threeSumSmaller(int[] nums, int target) {
+    if (nums == null || nums.length < 3) return 0;
+    int n = nums.length;
+    Arrays.sort(nums);
+    int ret = 0;
+    for (int i = 0; i < n; i++) {
+      int left = i+1, right = n-1;
+      while (left < right) {
+        int sum = nums[i] + nums[left] + nums[right];
+        if (sum >= target) {
+          right--;
+        } else {
+          ret += right - left;
+          left++;
+        }
+      }
+    }
+    return ret;
+  }
+
+  public List<List<Integer>> fourSum(int[] nums, int target) {
+    if (nums == null || nums.length < 4) return new ArrayList<List<Integer>>();
+    Arrays.sort(nums);
+    int n = nums.length;
+    List<List<Integer>> ret = new ArrayList<List<Integer>>();
+    for (int i = 0; i < n; i++) {
+      if (i > 0 && nums[i] == nums[i-1]) continue;
+      for (int j = i+1; j < n; j++) {
+        if (j > i+1 && nums[j] == nums[j-1]) continue;
+        int sum = target - nums[i] - nums[j];
+        int left = j+1, right = n-1;
+        while (left < right) {
+          int cursum = nums[left] + nums[right];
+          if (cursum < sum) left++;
+          else if (cursum > sum) right--;
+          else {
+            List<Integer> l = new ArrayList<Integer>();
+            l.add(nums[i]);
+            l.add(nums[j]);
+            l.add(nums[left]);
+            l.add(nums[right]);
+            ret.add(l);
+            left++;
+            while (left < right && nums[left] == nums[left-1]) left++;
+          }
+        }
+      }
+    }
+    return ret;
+  }
+
   public void moveZeros(int[] nums) {
     if (nums == null || nums.length <= 1) return;
     int left = 0, right = 0, n = nums.length;
@@ -125,6 +177,24 @@ public class TwoPointers {
     int n = nums.length, left = 1, right = 0;
     for (right = 1; right < n; right++) {
       if (nums[right] != nums[right-1]) {
+        nums[left++] = nums[right];
+      }
+    }
+    return left;
+  }
+
+  public int removeDuplicatesTwoCopy(int[] nums) {
+    if (nums == null || nums.length == 0) return 0;
+    int n = nums.length;
+    int left = 0, right = 0, count = 0;
+    for (right = 0; right < n; right++) {
+      if (right > 0 && nums[right] == nums[right-1]) {
+        if (count < 2) {
+          count++;
+          nums[left++] = nums[right];
+        }
+      } else {
+        count = 1;
         nums[left++] = nums[right];
       }
     }
@@ -211,10 +281,125 @@ public class TwoPointers {
     return true;
   }
 
+  public String minWindowSubstring(String s, String t) {
+    int m = s.length(), n = t.length();
+    int[] cs = new int[256], ct = new int[256];
+    for (int i = 0; i < n; i++) {
+      ct[t.charAt(i)]++;
+    }
+    int left = 0, right = 0, total = 0;
+    int minlen = m+1;
+    String ret = "";
+    for (right = 0; right < m; right++) {
+      char c = s.charAt(right);
+      cs[c]++;
+      if (ct[c] > 0 && cs[c] <= ct[c]) total++;
+      if (total == n) {
+        while(left < right) {
+          char cur = s.charAt(left);
+          if (cs[cur] > ct[cur]) {
+            cs[cur]--;
+            left++;
+          } else {
+            break;
+          }
+        }
+        if (minlen > right-left+1) {
+          minlen = right-left+1;
+          ret = s.substring(left, right+1);
+        }
+        cs[s.charAt(left)]--;
+        total--;
+        left++;
+      }
+    }
+    return ret;
+  }
+
+  public List<Integer> containsAllWords(String s, String[] words) {
+    if (s == null || words == null || s.length() == 0 || words.length == 0) return new ArrayList<Integer>();
+    int len = words[0].length();
+    List<Integer> ret = new ArrayList<Integer>();
+    HashMap<String, Integer> dict = new HashMap<String, Integer>();
+    for (String w : words) {
+      if (!dict.containsKey(w)) dict.put(w, 0);
+      dict.put(w, dict.get(w)+1);
+    }
+    HashMap<String, Integer> temp = new HashMap<String, Integer>();
+    for (int i = 0; i < s.length(); i++) {
+      int total = 0;
+      temp.clear();
+      for (int j = i; j<= s.length()-len; j = j+len) {
+        String str = s.substring(j, j+len);
+        if (!dict.containsKey(str)) break;
+        else {
+          if (dict.get(str) > 0 && (!temp.containsKey(str) || dict.get(str) > temp.get(str))) {
+            if (!temp.containsKey(str)) temp.put(str, 0);
+            temp.put(str, temp.get(str) + 1);
+            total++;
+          } else {
+            break;
+          }
+        }
+        if (total == words.length) {
+          ret.add(i);
+        }
+      }
+    }
+    return ret;
+  }
+
+  public int longestSubstringWithTwoDistinctChar(String s) {
+    if (s == null || s.length() == 0) return 0;
+    int n = s.length();
+    HashMap<Character, Integer> map = new HashMap<Character, Integer>();
+    int left = 0, right = 0, max = 0;
+    for (right = 0; right < n; right++) {
+      char c = s.charAt(right);
+      if (!map.containsKey(c)) map.put(c, 0);
+      map.put(c, map.get(c) + 1);
+      if (map.size() > 2) {
+        while (map.size() > 2) {
+          char c1 = s.charAt(left);
+          if (map.containsKey(c1)) {
+            if (map.get(c1) == 1) map.remove(c1);
+            else {
+              map.put(c1, map.get(c1)-1);
+            }
+          }
+          left++;
+        }
+      }
+      max = Math.max(max, right - left+1);
+    }
+    return max;
+  }
+
+  public int[] sortTransformedArray(int[] nums, int a, int b, int c) {
+    if (nums == null || nums.length == 0) return null;
+    int n = nums.length;
+    int[] ret = new int[n];
+    int i = 0, j = n-1, k = 0;
+    while (i <= j) {
+      if (a > 0) {
+        ret[n-1-k] = cal(nums[i], a, b, c) < cal(nums[j], a, b, c) ? cal(nums[j--], a, b, c) : cal(nums[i++], a, b, c);
+      } else {
+        ret[k] = cal(nums[i], a, b, c) < cal(nums[j], a, b, c) ? cal(nums[i++], a, b, c) : cal(nums[j--], a, b, c);
+      }
+      k++;
+    }
+    return ret;
+  }
+  private int cal(int x, int a, int b, int c) {
+    return a * x * x + b * x + c;
+  }
+
   public static void main(String[] args) {
-    String s = "aabdcc";
     TwoPointers test = new TwoPointers();
-    int[] nums = {0, 1, 2};
-    System.out.println(test.threeSumClosest(nums, 0));
+    int[] nums = {-4, -2, 2, 4};
+    String s = "eceba";
+    String t = "ABC";
+    String[] words = {"word","good","best","good"};
+    System.out.println(Arrays.toString(test.sortTransformedArray(nums, 1, 3, 5)));
   }
 }
