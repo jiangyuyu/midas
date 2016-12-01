@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
+import java.util.TreeSet;
 
 
 public class DP {
@@ -802,6 +803,28 @@ public class DP {
       }
     }
     return maxsum;
+  }
+
+  public int maxSumRectangle(int[][] matrix, int k) {
+    if (matrix == null || matrix.length == 0 || matrix[0].length == 0) return 0;
+    int m = matrix.length, n = matrix[0].length;
+    int ret = Integer.MIN_VALUE;
+    for (int p = 0; p < n; p++) {
+      int[] sum = new int[m];
+      for (int q = p; q < n; q++) {
+        TreeSet<Integer> set = new TreeSet<Integer>();
+        int tempsum = 0;
+        for (int r = 0; r < m; r++) {
+          sum[r] += matrix[r][q];
+          tempsum += sum[r];
+          if (tempsum < k) ret = Math.max(ret, tempsum);
+          Integer x = set.ceiling(tempsum - k);
+          if (x != null) ret = Math.max(ret, tempsum - x);
+          set.add(tempsum);
+        }
+      }
+    }
+    return ret;
   }
 
   public int wiggleMaxLength(int[] nums) {

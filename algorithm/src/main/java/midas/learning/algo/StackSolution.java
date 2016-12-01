@@ -1,6 +1,8 @@
 package midas.learning.algo;
 
+import java.util.Arrays;
 import java.util.EmptyStackException;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -343,6 +345,77 @@ public class StackSolution {
     String[] tokens = {"0", "3", "/"};
     StackSolution test = new StackSolution();
     System.out.println(test.parseTernary("T?F?2:3:4"));
+  }
+}
+
+class SnakeGame {
+  int width, height;
+  private int[][] food;
+  private int curfood;
+  private LinkedList<int[]> snake;
+  private HashSet<String> snakeOccupy;
+
+  /** Initialize your data structure here.
+   @param width - screen width
+   @param height - screen height
+   @param food - A list of food positions
+   E.g food = [[1,1], [1,0]] means the first food is positioned at [1,1], the second is at [1,0]. */
+  public SnakeGame(int width, int height, int[][] food) {
+    this.width = width;
+    this.height = height;
+    this.food = food;
+    curfood = 0;
+    int[] init = new int[2];
+    snake.add(init);
+    snakeOccupy = new HashSet<String>();
+    snakeOccupy.add(Arrays.toString(init));
+  }
+
+  /** Moves the snake.
+   @param direction - 'U' = Up, 'L' = Left, 'R' = Right, 'D' = Down
+   @return The game's score after the move. Return -1 if game over.
+   Game over when snake crosses the screen boundary or bites its body. */
+  public int move(String direction) {
+    int[] head = snake.getFirst();
+    int[] nexthead = new int[2];
+    if (direction.equals("U")) nexthead[0] = head[0]+1;
+    else if (direction.equals("D")) nexthead[0] = head[0]-1;
+    else if (direction.equals("L")) nexthead[1] = head[1]-1;
+    else if (direction.equals("R")) nexthead[1] = head[1]+1;
+    else return -1;
+    if (nexthead[0] < 0 || nexthead[0] >= height || nexthead[1] < 0 || nexthead[1] >= width) return -1;
+    if (nexthead[0] == food[curfood][0] && nexthead[1] == food[curfood][1]) {
+      snake.add(0, nexthead);
+      snakeOccupy.add(Arrays.toString(nexthead));
+      return snake.size();
+    }
+    int[] tail = snake.getLast();
+    snakeOccupy.remove(Arrays.toString(tail));
+    snake.removeLast();
+    if (snakeOccupy.contains(Arrays.toString(nexthead))) return -1;
+    snake.addFirst(nexthead);
+    snakeOccupy.add(Arrays.toString(nexthead));
+    return snake.size();
+  }
+}
+
+class MovingAverage {
+  int capacity;
+  LinkedList<Integer> queue = new LinkedList<Integer>();
+  int sum = 0;
+  public MovingAverage(int initsize) {
+    capacity = initsize;
+  }
+  public double next(int elem) {
+    if (queue.size() < capacity) {
+      sum += elem;
+      queue.add(elem);
+    } else {
+      int front = queue.poll();
+      queue.add(elem);
+      sum = sum - front + elem;
+    }
+    return (double)sum/queue.size();
   }
 }
 
