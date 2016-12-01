@@ -95,6 +95,14 @@ public class Heap {
     return ret;
   }
 
+  public boolean IamStupid() {
+    return true;
+  }
+
+  public boolean YouareStupid() {
+    return true;
+  }
+
   public static void main(String[] args) {
     int[] primes = {2, 7, 13, 19};
     Heap test = new Heap();
