@@ -98,6 +98,8 @@ public class Heap {
   public boolean IamStupid() {
     return false; // return false
     //comment 2
+    // 3rd comment
+    // 4th comment
   }
 
   public boolean helloworld() {
