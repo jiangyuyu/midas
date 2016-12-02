@@ -96,7 +96,7 @@ public class Heap {
   }
 
   public boolean IamStupid() {
-    return false;
+    return false; // return false
   }
 
   public boolean helloworld() {
