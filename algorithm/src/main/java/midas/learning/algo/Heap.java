@@ -96,11 +96,11 @@ public class Heap {
   }
 
   public boolean IamStupid() {
-    return true;
+    return false;
   }
 
-  public boolean YouareStupid() {
-    return true;
+  public boolean helloworld() {
+    return false;
   }
 
   public static void main(String[] args) {
