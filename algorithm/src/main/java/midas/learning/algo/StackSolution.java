@@ -1,8 +1,6 @@
 package midas.learning.algo;
 
-import java.util.Arrays;
 import java.util.EmptyStackException;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -344,16 +342,23 @@ public class StackSolution {
   public static void main(String[] args) {
     String[] tokens = {"0", "3", "/"};
     StackSolution test = new StackSolution();
-    System.out.println(test.parseTernary("T?F?2:3:4"));
+    int[][] food = {{2,0},{0,0},{0,2},{0,1},{2,2},{0,1}};
+    SnakeGame game = new SnakeGame(3, 3, food);
+    String[] directions = {
+        "D","D","R","U","U","L","D","R","R","U","L","L","D","R","U"};
+    for (String d : directions) {
+      System.out.println(game.move(d));
+    }
   }
 }
 
 class SnakeGame {
-  int width, height;
+  private int width;
+  private int height;
   private int[][] food;
   private int curfood;
-  private LinkedList<int[]> snake;
-  private HashSet<String> snakeOccupy;
+  private int length;
+  private LinkedList<int[]> snake; // track the snake cells
 
   /** Initialize your data structure here.
    @param width - screen width
@@ -365,10 +370,10 @@ class SnakeGame {
     this.height = height;
     this.food = food;
     curfood = 0;
-    int[] init = new int[2];
+    int[] init = {0, 0};
+    snake = new LinkedList<int[]>();
     snake.add(init);
-    snakeOccupy = new HashSet<String>();
-    snakeOccupy.add(Arrays.toString(init));
+    length = 0;
   }
 
   /** Moves the snake.
@@ -376,26 +381,27 @@ class SnakeGame {
    @return The game's score after the move. Return -1 if game over.
    Game over when snake crosses the screen boundary or bites its body. */
   public int move(String direction) {
-    int[] head = snake.getFirst();
-    int[] nexthead = new int[2];
-    if (direction.equals("U")) nexthead[0] = head[0]+1;
-    else if (direction.equals("D")) nexthead[0] = head[0]-1;
-    else if (direction.equals("L")) nexthead[1] = head[1]-1;
-    else if (direction.equals("R")) nexthead[1] = head[1]+1;
-    else return -1;
-    if (nexthead[0] < 0 || nexthead[0] >= height || nexthead[1] < 0 || nexthead[1] >= width) return -1;
-    if (nexthead[0] == food[curfood][0] && nexthead[1] == food[curfood][1]) {
-      snake.add(0, nexthead);
-      snakeOccupy.add(Arrays.toString(nexthead));
-      return snake.size();
+    int[] newhead = new int[2];
+    newhead[0] = snake.getFirst()[0];
+    newhead[1] = snake.getFirst()[1];
+    if (direction.equals("U")) newhead[1]--;
+    else if (direction.equals("D")) newhead[1]++;
+    else if (direction.equals("L")) newhead[0]--;
+    else if (direction.equals("R")) newhead[0]++;
+    if (newhead[0] < 0 || newhead[0] >= width || newhead[1] < 0 || newhead[1] >= height) return -1;
+    for (int i = 0; i < snake.size(); i++) {
+      if (newhead[0] == snake.get(i)[0] && newhead[1] == snake.get(i)[1]) return -1;
     }
-    int[] tail = snake.getLast();
-    snakeOccupy.remove(Arrays.toString(tail));
-    snake.removeLast();
-    if (snakeOccupy.contains(Arrays.toString(nexthead))) return -1;
-    snake.addFirst(nexthead);
-    snakeOccupy.add(Arrays.toString(nexthead));
-    return snake.size();
+    if (curfood < food.length && food[curfood][1] == newhead[0] && food[curfood][0] == newhead[1]) {
+      if (length == 0) snake.pollLast();
+      snake.add(0, newhead);
+      curfood++;
+      length++;
+    } else {
+      snake.pollLast();
+      snake.add(0, newhead);
+    }
+    return length;
   }
 }
 
