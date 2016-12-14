@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
-
+// add some in math
 public class math {
   private HashMap<Character, Integer> intMap = new HashMap<Character, Integer>();
   private HashMap<Integer, String> romanMap = new HashMap<Integer, String>();
@@ -714,7 +714,7 @@ public class math {
   }
 
   public boolean isConvex(List<List<Integer>> points) {
-    
+    return false;
   }
 
   public static void main(String[] args) {
