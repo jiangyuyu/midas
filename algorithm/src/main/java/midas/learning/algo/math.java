@@ -714,14 +714,90 @@ public class math {
   }
 
   public boolean isConvex(List<List<Integer>> points) {
-    return false;
+    if (points == null || points.size() < 3) return false;
+    int n = points.size();
+    int pre = 0, cur = 0;
+    for (int i = 0; i < n; i++) {
+      int dx1 = points.get((i+1)%n).get(0) - points.get((i)%n).get(0);
+      int dy1 = points.get((i+1)%n).get(1) - points.get((i)%n).get(1);
+      int dx2 = points.get((i+2)%n).get(0) - points.get((i)%n).get(0);
+      int dy2 = points.get((i+2)%n).get(1) - points.get((i)%n).get(1);
+      cur = dx1 * dy2 - dx2 * dy1;
+      if (cur != 0) {
+        if (cur * pre < 0) return false;
+        else pre = cur;
+      }
+    }
+    return true;
+  }
+
+  public int minIntegerReplacement(int n) {
+    if (n <= 1) return 0;
+    int[] f = new int[n+1];
+    f[1] = 0;
+    for (int i = 2; i <= n; i++) {
+      if (i % 2 == 0) f[i] = f[i/2] + 1;
+      else f[i] = Math.min(2 + f[(i-1)/2], 2 + f[(i+1)/2]);
+    }
+    return f[n];
+  }
+
+  public int minIntegerReplacementRecursion(int n) {
+    if (n == 0 || n == 1) return 0;
+    if (n % 2 == 0) return 1 + minIntegerReplacement(n/2);
+    return 2 + Math.min(minIntegerReplacementRecursion((n-1)/2), minIntegerReplacementRecursion((n+1)/2));
+  }
+
+  public int minIntegerReplacementIterative(int n) {
+    if (n <= 1) return 0;
+    int ret = 0;
+    while (n > 1) {
+      if ((n & 1) == 0) {
+        n = n/2;
+      } else if (n == 3 || ((n >> 1) & 1) == 0) {
+        // if ending with 01, do -1. but 3 is an exception
+        --n;
+      } else {
+        if (n == Integer.MAX_VALUE) {
+          n = (n-1)/2  + 1;
+          ret++;
+        } else {
+          // if ending with 11, do +1
+          n++;
+        }
+      }
+      ret++;
+    }
+    return ret;
+  }
+
+  public int numOfDigitOne(int n) {
+    if (n <= 0) return 0;
+    int res = 0;
+    for (int k = 1; k <= n; k = k * 10) {
+      int r = n/k; int m = n%k;
+      res += (r+8)/10 * k + (r%10 == 1? m+1: 0);
+    }
+    return res;
+  }
+
+  public int numberOfArithmeticSlices(int[] A) {
+    int curr = 0, sum = 0;
+    for (int i=2; i<A.length; i++)
+      if (A[i]-A[i-1] == A[i-1]-A[i-2]) {
+        curr += 1;
+        sum += curr;
+      } else {
+        curr = 0;
+      }
+    return sum;
   }
 
   public static void main(String[] args) {
     math test = new math();
     int[] arr = {Integer.MIN_VALUE, Integer.MIN_VALUE};
     char[] array = new char[2];
-    int[] count = new int[1];
-    System.out.println(test.countStrobogrammaticInRange("50", "100"));
+    int[] count = {1, 2, 3, 4, 5, 7, 9};
+    System.out.println(test.numberOfArithmeticSlices(count));
   }
 }
